@@ -9,6 +9,4 @@ public class OnlineSportsShopeeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(OnlineSportsShopeeApplication.class, args);
 	}
-	
-
 }

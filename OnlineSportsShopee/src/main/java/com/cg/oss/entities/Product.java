@@ -1,19 +1,26 @@
 package com.cg.oss.entities;
 
+import java.io.Serializable;
+
 import java.time.LocalDate;
+
 
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.stereotype.Component;
 
 @Component
 @Entity
-public class Product {
+@Table(name = "productTable")
+public class Product{
 	@Id
 	private long productId;
 	private String productName;
@@ -21,20 +28,19 @@ public class Product {
 	private String description;
 	private String brand; 
 	private String color;
-	private String sizevar;
+	private String imageName;
+	private String productSize;
 	private double mrp;
 	private int discount;
 	private double priceAfterDiscount;
 	private boolean inStock;
 	private LocalDate estimatedDelivery;
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="cart")
-	private Cart cart;
+
 	public Product() {
 		
 	}
 	public Product(long productId, String productName, String category, String description, String brand, String color,
-			String sizevar, double mrp, int discount, double priceAfterDiscount,
+			String productSize, double mrp, int discount, double priceAfterDiscount,boolean inStock,String imageName,
 			LocalDate estimatedDelivery) {
 		super();
 		this.productId = productId;
@@ -43,11 +49,12 @@ public class Product {
 		this.description = description;
 		this.brand = brand;
 		this.color = color;
-		this.sizevar = sizevar;
+		this.productSize = productSize;
 		this.mrp = mrp;
 		this.discount = discount;
 		this.priceAfterDiscount = priceAfterDiscount;
-		//this.inStock = inStock;
+		this.inStock = inStock;
+		this.imageName =  imageName;
 		this.estimatedDelivery = estimatedDelivery;
 	}
 	public long getProductId() {
@@ -55,6 +62,12 @@ public class Product {
 	}
 	public void setProductId(long productId) {
 		this.productId = productId;
+	}
+	public String getImageName() {
+		return imageName;
+	}
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
 	}
 	public String getProductName() {
 		return productName;
@@ -86,11 +99,11 @@ public class Product {
 	public void setColor(String color) {
 		this.color = color;
 	}
-	public String getSize_Var() {
-		return sizevar;
+	public String getProductSize() {
+		return productSize;
 	}
-	public void setSize_Var(String size) {
-		this.sizevar = sizevar;
+	public void setSize_Var(String productSize) {
+		this.productSize = productSize;
 	}
 	public double getMrp() {
 		return mrp;
@@ -125,7 +138,7 @@ public class Product {
 	@Override
 	public String toString() {
 		return "Product [productId=" + productId + ", productName=" + productName + ", category=" + category
-				+ ", description=" + description + ", brand=" + brand + ", color=" + color + ", size=" + sizevar + ", mrp="
+				+ ", description=" + description + ", brand=" + brand + ", color=" + color + ", size=" + productSize + ", mrp="
 				+ mrp + ", discount=" + discount + ", priceAfterDiscount=" + priceAfterDiscount 
 				+ ", estimatedDelivery=" + estimatedDelivery + "]";
 	}

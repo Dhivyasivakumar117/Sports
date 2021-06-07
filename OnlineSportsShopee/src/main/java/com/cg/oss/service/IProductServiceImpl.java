@@ -1,5 +1,8 @@
 package com.cg.oss.service;
 
+import java.time.LocalDate;
+
+
 import java.util.List;
 
 import java.util.Optional;
@@ -9,86 +12,113 @@ import org.springframework.stereotype.Service;
 
 import com.cg.oss.entities.Product;
 import com.cg.oss.repopsitories.IProductRepository;
+import com.cg.oss.exception.ResourceNotFoundException;
 
 @Service
 public class IProductServiceImpl implements IProductService{
 
 	@Autowired
 	private IProductRepository product_Repo;
+	
+	   LocalDate now = LocalDate.now(); 
+	  
 	@Override
 	public Product addProduct(Product product) {
+		double total = product.getMrp() - ((product.getMrp()*product.getDiscount())/100);
+		product.setPriceAfterDiscount(total);
 		return product_Repo.save(product);
 	}
 	@Override
 	public List<Product> getAllProduct() {
-		return product_Repo.findAll();
+		List<Product> product = product_Repo.findAll();
+	
+		  // System.out.println(dtf.format(now));
+		for(Product li: product) {
+		   li.setEstimatedDelivery( now.plusDays(5));
+		}
+		return product;
 	}
+	
 	@Override
-	public Product getProduct(long product_id) throws IProductServiceException{
-	    Optional<Product> product = product_Repo.findById(product_id);
-	    	if(!product.isPresent()) {
-	    		throw new IProductServiceException("No Exception");
-	    	}
-	    	
-	       return product.get();
-	}
+    public Product getProduct(long product_id) throws ResourceNotFoundException {
+        Optional<Product> product = product_Repo.findById(product_id);
+        if(!product.isPresent()) {
+            throw new ResourceNotFoundException("Product not found") ;
+        }
+        return product.get();
+    }
 	@Override
-	public Product removeProduct(long id) throws IProductServiceException {
+	public Product removeProduct(long id) throws ResourceNotFoundException {
 		 Optional<Product> product = product_Repo.findById(id);
 	    	if(!product.isPresent()) {
-	    		throw new IProductServiceException("No Exception");
+	    		throw new ResourceNotFoundException("Product not found");
 	    	}
 	       product_Repo.delete(product.get());
 	       return product.get();
 	}
 	@Override
-	public Product updateProduct(long id, Product product) throws IProductServiceException{
+	public Product updateProduct(long id, Product product) throws ResourceNotFoundException{
 		  Optional<Product> prod =  product_Repo.findById(id);
 	        if (!prod.isPresent()) {
-	        	throw new IProductServiceException("No Exception");
+	        	throw new ResourceNotFoundException("Product not found");
 	        }
 	        else  {
-	                     product.setProductId(id);
+	            product.setProductId(id);
+	        	double total = product.getMrp() - ((product.getMrp()*product.getDiscount())/100);
+			product.setPriceAfterDiscount(total);
 	                     return product_Repo.save(product);
 	        }
 	}
 	@Override
-	public List<Product> getProductsByName(String productName) throws IProductServiceException{
+	public List<Product> getProductsByName(String productName) throws ResourceNotFoundException{
 		List<Product> product = product_Repo.findByProductName(productName);
+		
 		if(product.isEmpty()) {
-			throw new IProductServiceException("No Exception");
+			throw new ResourceNotFoundException("Product not found");
 		}
 		else {
+			for(Product product_obj : product) {
+				product_obj.setEstimatedDelivery(now.plusDays(5));
+			}
 		return product;
 		}
 	}
 	@Override
-	public List<Product> getProductsBySize(String size) throws IProductServiceException{
-		List<Product> product = product_Repo.findBySizevar(size);
+	public List<Product> getProductsBySize(String size) throws ResourceNotFoundException{
+		List<Product> product = product_Repo.findByProductSize(size);
 		if(product.isEmpty()) {
-			throw new IProductServiceException("No Exception");
+			throw new ResourceNotFoundException("Product not found");
 		}
 		else {
+			for(Product product_obj : product) {
+				product_obj.setEstimatedDelivery(now.plusDays(5));
+			}
 		return product;
 		}
 	}
 	@Override
-	public List<Product> getProductsByPrice(double price) throws IProductServiceException{
+	public List<Product> getProductsByPrice(double price) throws ResourceNotFoundException{
 		List<Product> product =  product_Repo.findByMrp(price);
 		if(product.isEmpty()) {
-			throw new IProductServiceException("No Exception");
+			throw new ResourceNotFoundException("Product not found");
 		}
 		else {
+			for(Product product_obj : product) {
+				product_obj.setEstimatedDelivery(now.plusDays(5));
+			}
 		return product;
 		}
 	}
 	@Override
-	public List<Product> getProductsByColor(String color) throws IProductServiceException{
+	public List<Product> getProductsByColor(String color) throws ResourceNotFoundException{
 		List<Product> product = product_Repo.findByColor(color);
 		if(product.isEmpty()) {
-			throw new IProductServiceException("No Exception");
+			throw new ResourceNotFoundException("Product not found");
 		}
 		else {
+			for(Product product_obj : product) {
+				product_obj.setEstimatedDelivery(now.plusDays(5));
+			}
 		return product; 
 		}
 	}
