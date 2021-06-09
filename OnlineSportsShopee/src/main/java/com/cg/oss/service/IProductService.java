@@ -9,7 +9,7 @@ public interface IProductService {
 
 	public List<Product> getAllProduct();
 	
-	public Product addProduct(Product product);
+	public Product addProduct(Product product) throws ResourceNotFoundException;
 	
 	public Product getProduct(long id) throws ResourceNotFoundException;
 	

@@ -23,7 +23,12 @@ public class IProductServiceImpl implements IProductService{
 	   LocalDate now = LocalDate.now(); 
 	  
 	@Override
-	public Product addProduct(Product product) {
+	public Product addProduct(Product product) throws ResourceNotFoundException{
+		long id = product.getProductId();
+	    Optional<Product> product1 = product_Repo.findById(id);
+	    if(product1.isPresent()) {
+            throw new ResourceNotFoundException("Product already present") ;
+        }
 		double total = product.getMrp() - ((product.getMrp()*product.getDiscount())/100);
 		product.setPriceAfterDiscount(total);
 		return product_Repo.save(product);

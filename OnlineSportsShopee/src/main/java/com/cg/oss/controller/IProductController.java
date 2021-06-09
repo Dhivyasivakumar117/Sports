@@ -34,8 +34,12 @@ public class IProductController {
 	}
 
 	@RequestMapping(value = "/product/add", method = RequestMethod.POST)
-	public Product addProduct(@Valid @RequestBody Product new_product) {
-		return product_service.addProduct(new_product);
+	public Product addProduct(@Valid @RequestBody Product new_product) throws ResourceNotFoundException{
+		Product product1 = product_service.addProduct(new_product);
+		if (product1 == null) {
+			throw new ResourceNotFoundException("Product already present ");
+		}
+		return product1;
 	}
 
 	

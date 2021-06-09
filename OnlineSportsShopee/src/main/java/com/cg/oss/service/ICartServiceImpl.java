@@ -28,6 +28,11 @@ public class ICartServiceImpl implements ICartService {
 	@Override
 	public Cart addCart(Cart cart) throws ResourceNotFoundException {
 		long productId = cart.getProduct().getProductId();
+		long cartId = cart.getCartId();
+		Optional<Cart> cart1 = cartRepo.findById(cartId);
+		if (cart1.isPresent()) {
+			throw new ResourceNotFoundException("Cart Already Present");
+		}
 		Optional<Product> product1 = productRepo.findById(productId);
 		Product product = product1.get();
 		if(!product.isInStock()) {
